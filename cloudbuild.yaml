@@ -1,6 +1,6 @@
 steps:
   - name: gcr.io/cloud-builders/mvn
-    args: ["package", "-P", "kafka-0-11"]
+    args: ["--batch-mode", "package", "-P", "kafka-0-11"]
 
   - name: gcr.io/cloud-builders/docker
     args:
