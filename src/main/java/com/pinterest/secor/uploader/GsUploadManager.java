@@ -1,15 +1,15 @@
 package com.pinterest.secor.uploader;
 
+import com.google.api.client.googleapis.apache.GoogleApacheHttpTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.google.api.client.http.FileContent;
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.HttpUnsuccessfulResponseHandler;
-import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
@@ -18,9 +18,6 @@ import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.StorageObject;
 import com.pinterest.secor.common.LogFilePath;
 import com.pinterest.secor.common.SecorConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,6 +26,8 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages uploads to Google Cloud Storage using the Storage class from the Google API SDK.
@@ -106,7 +105,7 @@ public class GsUploadManager extends UploadManager {
 
     private static Storage getService(String credentialsPath, int connectTimeoutMs, int readTimeoutMs) throws Exception {
         if (mStorageService == null) {
-            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            HttpTransport httpTransport = GoogleApacheHttpTransport.newTrustedTransport();
 
             GoogleCredential credential;
             try {
