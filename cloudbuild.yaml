@@ -10,7 +10,7 @@ steps:
       - "-t"
       - "us.gcr.io/${PROJECT_ID}/secor:latest"
       - "."
-
+timeout: 900s
 images:
   - "us.gcr.io/${PROJECT_ID}/secor:${COMMIT_SHA}"
   - "us.gcr.io/${PROJECT_ID}/secor:latest"
