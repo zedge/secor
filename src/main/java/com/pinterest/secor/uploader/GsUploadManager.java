@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
@@ -76,17 +77,27 @@ public class GsUploadManager extends UploadManager {
             @Override
             public void run() {
                 try {
-                    byte[] content = Files.readAllBytes(localFile.toPath());
-
                     if (directUpload) {
+                        byte[] content = Files.readAllBytes(localFile.toPath());
                         Blob result = mClient.create(sourceBlob, content);
                         LOG.debug("Upload file {} to gs://{}/{}", localFile, gsBucket, gsKey);
                         LOG.trace("Upload file {}, Blob: {}", result);
                     } else {
-                        try (WriteChannel writer = mClient.writer(sourceBlob)) {
-                            writer.write(ByteBuffer.wrap(content, 0, content.length));
+                        long startTime = System.nanoTime();
+                        try (WriteChannel out = mClient.writer(sourceBlob);
+                            FileChannel in = new FileInputStream(localFile).getChannel();
+                            ) {
+                            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 128);
+
+                            int bytesRead;
+                            while ((bytesRead = in.read(buffer)) > 0) {
+                                buffer.flip();
+                                out.write(buffer);
+                                buffer.clear();
+                            }
                         }
-                        LOG.debug("Upload file {} to gs://{}/{}", localFile, gsBucket, gsKey);
+                        long elapsedTime = System.nanoTime() - startTime;
+                        LOG.debug("Upload file {} to gs://{}/{} in {} msec", localFile, gsBucket, gsKey, (elapsedTime / 1000000.0));
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
