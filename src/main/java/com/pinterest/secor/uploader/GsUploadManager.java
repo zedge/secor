@@ -44,7 +44,7 @@ public class GsUploadManager extends UploadManager {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(256);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     /**
      * Global instance of the Storage. The best practice is to make it a single
@@ -89,7 +89,7 @@ public class GsUploadManager extends UploadManager {
                         try (WriteChannel out = mClient.writer(sourceBlob);
                             FileChannel in = new FileInputStream(localFile).getChannel();
                             ) {
-                            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 5); // 5 MiB buffer (remember we have 256 threads)
+                            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 5); // 5 MiB buffer (remember we have 5 threads)
 
                             int bytesRead;
                             while ((bytesRead = in.read(buffer)) > 0) {
