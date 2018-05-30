@@ -45,7 +45,7 @@ public class GsUploadManager extends UploadManager {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(256);
+    private final ExecutorService executor;
 
     protected RateLimiter rateLimiter;
 
@@ -59,7 +59,9 @@ public class GsUploadManager extends UploadManager {
 
     public GsUploadManager(SecorConfig config) throws Exception {
         super(config);
+        executor = Executors.newFixedThreadPool(mConfig.getGsThreadPoolSize());
         rateLimiter = RateLimiter.create(mConfig.getGsRateLimit());
+
         mClient = getService(mConfig.getGsCredentialsPath(),
                 mConfig.getGsConnectTimeoutInMs(), mConfig.getGsReadTimeoutInMs());
     }
