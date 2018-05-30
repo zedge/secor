@@ -11,6 +11,7 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.common.util.concurrent.RateLimiter;
 import com.pinterest.secor.common.LogFilePath;
 import com.pinterest.secor.common.SecorConfig;
 import java.io.File;
@@ -44,7 +45,9 @@ public class GsUploadManager extends UploadManager {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(256);
+
+    protected RateLimiter rateLimiter;
 
     /**
      * Global instance of the Storage. The best practice is to make it a single
@@ -56,7 +59,7 @@ public class GsUploadManager extends UploadManager {
 
     public GsUploadManager(SecorConfig config) throws Exception {
         super(config);
-
+        rateLimiter = RateLimiter.create(mConfig.getGsRateLimit());
         mClient = getService(mConfig.getGsCredentialsPath(),
                 mConfig.getGsConnectTimeoutInMs(), mConfig.getGsReadTimeoutInMs());
     }
@@ -74,6 +77,8 @@ public class GsUploadManager extends UploadManager {
             .newBuilder(BlobId.of(gsBucket, gsKey))
             .setContentType(Files.probeContentType(localFile.toPath()))
             .build();
+
+        rateLimiter.acquire();
 
         final Future<?> f = executor.submit(new Runnable() {
             @Override
