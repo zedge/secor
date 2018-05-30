@@ -2,6 +2,7 @@ package com.pinterest.secor.uploader;
 
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.services.storage.StorageScopes;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
@@ -24,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Duration;
 
 /**
  * Manages uploads to Google Cloud Storage using the Storage class from the Google API SDK.
@@ -132,6 +134,20 @@ public class GsUploadManager extends UploadManager {
             } else {
                 builder = StorageOptions.getDefaultInstance().toBuilder();
             }
+
+            // These retrySettings are copied from default com.google.cloud.ServiceOptions#getDefaultRetrySettingsBuilder
+            // and changed initial retry delay to 5 seconds from 1 seconds.
+            // Changed max attempts from 6 to 12.
+            builder.setRetrySettings(RetrySettings.newBuilder()
+                .setMaxAttempts(12)
+                .setInitialRetryDelay(Duration.ofMillis(5000L))
+                .setMaxRetryDelay(Duration.ofMillis(32_000L))
+                .setRetryDelayMultiplier(2.0)
+                .setTotalTimeout(Duration.ofMillis(50_000L))
+                .setInitialRpcTimeout(Duration.ofMillis(50_000L))
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRpcTimeout(Duration.ofMillis(50_000L))
+                .build());
 
             mStorageService = builder
                 .build()
