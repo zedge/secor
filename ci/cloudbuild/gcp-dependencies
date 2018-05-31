@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# _CACHE_BUCKET is a user substitue variable in your cloud build.
+# _M2_LOCAL_REPOSITORY , non required, defaults to 
+# _REPO_NAME is a user substitute variable in your cloud build to use for fallback for non triggered builds (not required)
+# _BRANCH_NAME is a user substitue variable in your cloud build to use for fallback for non triggered builds (not required)
+#
+# Usage as a step:
+# - name: 'gcr.io/cloud-builders/gsutil'
+#   entrypoint: bash
+#   args: ['ci/cloudbuild/gcp-dependencies']
+#   waitFor: ['-']
+
+
+set -x
+
+REPO_NAME=${REPO_NAME:-${_REPO_NAME:-unknown}}
+BRANCH_NAME=${BRANCH_NAME:-${_BRANCH_NAME:-unknown}}
+M2_LOCAL_REPOSITORY=${_M2_LOCAL_REPOSITORY:-/usr/share/maven/ref/repository}
+
+gsutil cp -r "gs://${_CACHE_BUCKET}/${REPO_NAME}/${BRANCH_NAME}/m2.tar" /tmp/m2.tar || exit 0
+
+mkdir -p "${M2_LOCAL_REPOSITORY}/"
+tar --extract --file /tmp/m2.tar -C "${M2_LOCAL_REPOSITORY}"
