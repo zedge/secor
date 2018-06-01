@@ -7,7 +7,7 @@ MVN_OPTS=-DskipTests=true -Dmaven.javadoc.skip=true -P $(MVN_PROFILE)
 CONTAINERS=$(shell ls containers)
 
 build:
-	@mvn package $(MVN_OPTS)
+	@mvn package $(MVN_OPTS) -P $(MVN_PROFILE)
 
 unit:
 	@mvn test -P $(MVN_PROFILE)
