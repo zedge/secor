@@ -30,7 +30,7 @@ steps:
       "mvn",
       "--batch-mode",
       "package",
-      "-P", "kafka-0-11"
+      "-P", "kafka-0.11-1.0.0"
     ]
 
   - name: gcr.io/cloud-builders/docker
