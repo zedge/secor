@@ -96,7 +96,7 @@ public class GsUploadManager extends UploadManager {
                         try (WriteChannel out = mClient.writer(sourceBlob);
                             FileChannel in = new FileInputStream(localFile).getChannel();
                             ) {
-                            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 5); // 5 MiB buffer (remember we have 5 threads)
+                            ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 5); // 5 MiB buffer (remember this is pr. thread)
 
                             int bytesRead;
                             while ((bytesRead = in.read(buffer)) > 0) {
