@@ -3,7 +3,12 @@ addons:
   hosts:
     - test-bucket.localhost
 env:
-  - PATH=$PATH:$HOME/.s3cmd SECOR_LOCAL_S3=true S3CMD=2.0.1
+  global:
+    - PATH=$PATH:$HOME/.s3cmd SECOR_LOCAL_S3=true S3CMD=2.0.1
+  matrix:
+    - MVN_PROFILE=kafka-0.11-1.0.0
+    - MVN_PROFILE=kafka-0.10.0.1
+    - MVN_PROFILE=kafka-0.8-dev
 jdk:
   - openjdk8
   - oraclejdk8

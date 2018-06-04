@@ -70,7 +70,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.9.1</version>
+                <version>2.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.9.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -266,11 +276,6 @@
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
             <version>0.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>ostrich_2.11</artifactId>
-            <version>9.27.0</version>
         </dependency>
         <dependency>
             <groupId>com.twitter.common.zookeeper</groupId>
@@ -624,6 +629,15 @@
                     </plugin>
                 </plugins>
             </build>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.module</groupId>
+                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <version>2.9.5</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
@@ -635,6 +649,11 @@
                             <artifactId>slf4j-simple</artifactId>
                         </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>ostrich_2.10</artifactId>
+                    <version>9.2.1</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -666,39 +685,48 @@
                         </exclusion>
                     </exclusions>
                 </dependency>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>ostrich_2.10</artifactId>
+                    <version>9.2.1</version>
+                 </dependency>
             </dependencies>
         </profile>
         <profile>
-            <id>kafka-0-11</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>kafka-0.11-1.0.0</id>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.module</groupId>
+                        <artifactId>jackson-module-scala_2.11</artifactId>
+                        <version>2.9.5</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
                     <artifactId>kafka_2.11</artifactId>
                     <version>1.0.0</version>
                 </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>kafka-0.10-dev</id>
-            <dependencies>
                 <dependency>
-                    <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
-                    <version>0.10.2.0</version>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-simple</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>ostrich_2.11</artifactId>
+                    <version>9.27.0</version>
+              </dependency>
             </dependencies>
         </profile>
         <profile>
             <id>kafka-0.10.0.1</id>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.module</groupId>
+                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <version>2.9.5</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
@@ -710,6 +738,11 @@
                             <artifactId>slf4j-simple</artifactId>
                         </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>ostrich_2.10</artifactId>
+                    <version>9.2.1</version>
                 </dependency>
             </dependencies>
         </profile>

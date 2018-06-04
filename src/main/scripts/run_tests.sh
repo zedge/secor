@@ -22,7 +22,7 @@
 #
 # To run the test:
 #     cd ${OPTIMUS}/secor
-#     mvn package
+#     mvn package -P <kafka-profile with matching scala versions>
 #     mkdir /tmp/test
 #     cd /tmp/test
 #     tar -zxvf ~/git/optimus/secor/target/secor-0.2-SNAPSHOT-bin.tar.gz
